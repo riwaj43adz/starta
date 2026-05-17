@@ -32,25 +32,26 @@ export default function GoalCard({
   const depthColor = depthToHex(depth);
 
   const thrustAreaColors: Record<string, string> = {
-    "Product Excellence": "#C4603A",
-    "Technical Innovation": "#4A5E3A",
-    "Customer Success": "#D4913A",
-    "Team Leadership": "#7A5C3E",
-    "Process Improvement": "#7A9170",
-    "Revenue Growth": "#4A5568",
-    "Compliance & Risk": "#9E4A2A",
-    "Learning & Development": "#C9A97A",
+    "Product Excellence": "var(--status-danger)",
+    "Technical Innovation": "var(--layer-growing)",
+    "Customer Success": "var(--brand-amber)",
+    "Team Leadership": "var(--layer-solid)",
+    "Process Improvement": "var(--status-success)",
+    "Revenue Growth": "var(--status-info)",
+    "Compliance & Risk": "var(--status-danger)",
+    "Learning & Development": "var(--layer-light)",
   };
 
-  const thrustColor = thrustAreaColors[goal.thrustArea] ?? "#7A5C3E";
+  const thrustColor = thrustAreaColors[goal.thrustArea] ?? "var(--text-tertiary)";
 
   return (
     <motion.div
       className={cn(
-        "goal-card relative cursor-pointer group",
-        onClick ? "hover:shadow-stratum-hover" : "",
+        "card relative",
+        onClick ? "card-hover" : "",
         className
       )}
+      style={{ padding: 20, display: "flex", flexDirection: "column" }}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06, ease: [0.4, 0, 0.2, 1] }}
@@ -59,101 +60,77 @@ export default function GoalCard({
       {/* Left accent for shared goals */}
       {goal.isShared && (
         <div
-          className="absolute left-0 top-0 bottom-0 w-0.5"
-          style={{ background: "#D4913A" }}
+          style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "var(--brand-amber)" }}
         />
       )}
 
       {/* Thrust area tag */}
-      <div className="flex items-start justify-between mb-3">
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
         <span
-          className="text-xs font-medium tracking-wide uppercase px-2 py-0.5"
+          className="text-label"
           style={{
-            background: `${thrustColor}15`,
+            padding: "2px 6px",
+            background: `color-mix(in srgb, ${thrustColor} 15%, transparent)`,
             color: thrustColor,
-            borderRadius: "1px",
+            borderRadius: 2,
           }}
         >
           {goal.thrustArea}
         </span>
-        <div className="flex items-center gap-2">
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {goal.isShared && (
-            <span
-              className="text-xs tracking-wide"
-              style={{ color: "#D4913A" }}
-            >
+            <span className="badge badge-amber">
               shared
             </span>
           )}
-          <span
-            className="text-xs font-medium"
-            style={{ color: "#C9A97A" }}
-          >
+          <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-tertiary)" }}>
             {goal.weightage}%
           </span>
         </div>
       </div>
 
       {/* Goal title */}
-      <h3
-        className="font-serif text-base font-semibold mb-1 leading-snug"
-        style={{ color: "#2C2A26" }}
-      >
+      <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4, lineHeight: 1.3 }}>
         {goal.title}
       </h3>
 
       {/* Description */}
-      <p
-        className="text-xs leading-relaxed mb-4"
-        style={{ color: "#7A5C3E", opacity: 0.8 }}
-      >
+      <p style={{ fontSize: 13, lineHeight: 1.6, color: "var(--text-secondary)", marginBottom: 16 }}>
         {goal.description}
       </p>
 
       {/* Progress sediment indicator + UoM */}
-      <div className="flex items-end justify-between mt-auto">
-        <div className="flex items-center gap-2">
-          <span
-            className="text-xs font-medium px-2 py-0.5"
-            style={{
-              background: "rgba(122,92,62,0.08)",
-              color: "#7A5C3E",
-              borderRadius: "1px",
-            }}
-          >
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginTop: "auto" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span className="badge badge-neutral">
             {UOM_SHORT[goal.uomType]}
           </span>
-          <span className="text-xs" style={{ color: "#C9A97A" }}>
+          <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
             Target: {goal.targetValue}
           </span>
         </div>
 
         {showProgress && latestUpdate && (
-          <div className="flex items-center gap-2">
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {/* Sediment fill indicator */}
             <div
-              className="w-12 h-1 relative overflow-hidden"
-              style={{ background: "#E8E3D8", borderRadius: "1px" }}
+              style={{ width: 48, height: 4, position: "relative", overflow: "hidden", background: "var(--surface-border-strong)", borderRadius: 2 }}
             >
               <motion.div
-                className="absolute inset-y-0 left-0"
-                style={{ background: depthColor, borderRadius: "1px" }}
+                style={{ position: "absolute", inset: "0 auto 0 0", background: depthColor, borderRadius: 2 }}
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(score, 100)}%` }}
                 transition={{ duration: 0.8, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
               />
             </div>
-            <span
-              className="text-xs font-semibold"
-              style={{ color: depthColor }}
-            >
+            <span style={{ fontSize: 12, fontWeight: 600, color: depthColor }}>
               {formatScore(score, goal.uomType)}
             </span>
           </div>
         )}
 
         {showProgress && !latestUpdate && (
-          <span className="text-xs" style={{ color: "#E8E3D8" }}>
+          <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
             Not yet updated
           </span>
         )}
@@ -162,17 +139,10 @@ export default function GoalCard({
       {/* Latest context note preview */}
       {latestUpdate?.contextNote && (
         <div
-          className="mt-3 pt-3 flex gap-2"
-          style={{ borderTop: "1px solid rgba(122,92,62,0.08)" }}
+          style={{ marginTop: 12, paddingTop: 12, display: "flex", gap: 8, borderTop: "1px solid var(--surface-border)" }}
         >
-          <div
-            className="w-0.5 flex-shrink-0 mt-0.5"
-            style={{ background: "#C9A97A" }}
-          />
-          <p
-            className="text-xs leading-relaxed font-serif italic line-clamp-2"
-            style={{ color: "#7A5C3E" }}
-          >
+          <div style={{ width: 2, flexShrink: 0, marginTop: 2, background: "var(--text-tertiary)" }} />
+          <p style={{ fontSize: 13, lineHeight: 1.6, fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--text-secondary)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
             {latestUpdate.contextNote}
           </p>
         </div>

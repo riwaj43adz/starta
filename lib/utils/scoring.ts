@@ -17,25 +17,21 @@ export function computeScore(
 ): number {
   switch (uomType) {
     case "numeric_max": {
-      // Higher is better — percentage of target achieved, capped at 150%
       if (targetValue === 0) return 100;
       const pct = (actualValue / targetValue) * 100;
       return Math.min(Math.max(pct, 0), 150);
     }
     case "numeric_min": {
-      // Lower is better — full score if at or below target
       if (actualValue <= targetValue) return 100;
       if (targetValue === 0) return 0;
       const overage = (actualValue - targetValue) / targetValue;
       return Math.max(0, 100 - overage * 100);
     }
     case "zero_based": {
-      // Target is 0 — full score if achieved exactly 0, deduct per incident
       if (actualValue === 0) return 100;
       return Math.max(0, 100 - actualValue * 20);
     }
     case "timeline": {
-      // Milestone-based — progress as fraction of target
       if (targetValue === 0) return 100;
       return Math.min((actualValue / targetValue) * 100, 100);
     }
@@ -61,12 +57,12 @@ export function scoreToDepth(score: number): StratumDepth {
  */
 export function depthToColor(depth: StratumDepth): string {
   switch (depth) {
-    case "deep":    return "bg-amber";
-    case "solid":   return "bg-clay";
-    case "growing": return "bg-sage";
-    case "light":   return "bg-sand";
-    case "thin":    return "bg-slate";
-    case "empty":   return "bg-fog";
+    case "deep":    return "bg-amber-500";
+    case "solid":   return "bg-amber-700";
+    case "growing": return "bg-green-600";
+    case "light":   return "bg-amber-300";
+    case "thin":    return "bg-slate-500";
+    case "empty":   return "bg-neutral-800";
   }
 }
 
@@ -75,12 +71,12 @@ export function depthToColor(depth: StratumDepth): string {
  */
 export function depthToHex(depth: StratumDepth): string {
   switch (depth) {
-    case "deep":    return "#D4913A";
-    case "solid":   return "#7A5C3E";
-    case "growing": return "#7A9170";
-    case "light":   return "#C9A97A";
-    case "thin":    return "#4A5568";
-    case "empty":   return "#E8E3D8";
+    case "deep":    return "var(--brand-amber)";
+    case "solid":   return "var(--layer-solid)";
+    case "growing": return "var(--layer-growing)";
+    case "light":   return "var(--layer-light)";
+    case "thin":    return "var(--layer-thin)";
+    case "empty":   return "var(--surface-border-strong)";
   }
 }
 

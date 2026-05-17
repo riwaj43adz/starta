@@ -27,8 +27,7 @@ export default function LayerCeremony({ onComplete }: LayerCeremonyProps) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center"
-        style={{ background: "rgba(44,42,38,0.92)" }}
+        style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-0)", opacity: 0.96 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -38,16 +37,16 @@ export default function LayerCeremony({ onComplete }: LayerCeremonyProps) {
           onComplete?.();
         }}
       >
-        <div className="flex flex-col items-center gap-8 px-8 text-center">
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32, padding: "0 32px", textAlign: "center" }}>
           {/* Stratum forming */}
-          <div className="w-48 flex gap-1">
+          <div style={{ width: 192, display: "flex", gap: 4 }}>
             {[0, 1, 2, 3].map((i) => (
               <motion.div
                 key={i}
-                className="flex-1 rounded-none"
                 style={{
-                  height: "8px",
-                  backgroundColor: i === 0 ? "#D4913A" : "#E8E3D8",
+                  flex: 1,
+                  height: 8,
+                  backgroundColor: i === 0 ? "var(--brand-amber)" : "var(--surface-border-strong)",
                   transformOrigin: "left center",
                 }}
                 initial={{ scaleX: 0 }}
@@ -63,13 +62,12 @@ export default function LayerCeremony({ onComplete }: LayerCeremonyProps) {
 
           {/* Amber glow */}
           <motion.div
-            className="w-2 h-2 rounded-full"
-            style={{ background: "#D4913A" }}
+            style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--brand-amber)" }}
             animate={{
               boxShadow: [
-                "0 0 0 0 rgba(212,145,58,0)",
-                "0 0 0 16px rgba(212,145,58,0.15)",
-                "0 0 0 0 rgba(212,145,58,0)",
+                "0 0 0 0 rgba(232,162,58,0)",
+                "0 0 0 16px rgba(232,162,58,0.15)",
+                "0 0 0 0 rgba(232,162,58,0)",
               ],
             }}
             transition={{ duration: 1.5, repeat: Infinity }}
@@ -79,8 +77,7 @@ export default function LayerCeremony({ onComplete }: LayerCeremonyProps) {
           <AnimatePresence>
             {phase === "text" && (
               <motion.p
-                className="font-serif italic text-xl"
-                style={{ color: "#C9A97A" }}
+                style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: "1.25rem", color: "var(--text-primary)" }}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
@@ -92,8 +89,7 @@ export default function LayerCeremony({ onComplete }: LayerCeremonyProps) {
           </AnimatePresence>
 
           <motion.p
-            className="text-xs tracking-widest uppercase"
-            style={{ color: "rgba(201,169,122,0.35)" }}
+            className="text-label"
             animate={{ opacity: [0.35, 0.6, 0.35] }}
             transition={{ duration: 2, repeat: Infinity }}
           >

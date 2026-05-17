@@ -31,7 +31,7 @@ export default function QuietAcknowledgment({
     <AnimatePresence>
       {visible && (
         <motion.div
-          className="fixed top-6 right-6 z-50 max-w-sm"
+          style={{ position: "fixed", top: 24, right: 24, zIndex: 50, maxWidth: 384, width: "100%" }}
           initial={{ opacity: 0, y: -8, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -4, scale: 0.98 }}
@@ -42,31 +42,28 @@ export default function QuietAcknowledgment({
           }}
         >
           <div
-            className="flex items-start gap-3 p-4 cursor-pointer"
+            className="card"
             style={{
-              background: "#2C2A26",
-              border: "1px solid rgba(201,169,122,0.2)",
-              boxShadow: "0 8px 32px rgba(44,42,38,0.3)",
+              display: "flex", alignItems: "flex-start", gap: 12, padding: 16, cursor: "pointer",
+              background: "var(--surface-3)",
+              boxShadow: "var(--shadow-elevated)",
             }}
           >
-            <div className="mt-0.5 flex-shrink-0">
+            <div style={{ marginTop: 2, flexShrink: 0 }}>
               {hadChanges ? (
-                <Edit3 size={14} style={{ color: "#D4913A" }} />
+                <Edit3 size={14} style={{ color: "var(--brand-amber)" }} />
               ) : (
-                <CheckCircle size={14} style={{ color: "#7A9170" }} />
+                <CheckCircle size={14} style={{ color: "var(--status-success)" }} />
               )}
             </div>
 
             <div>
-              <p
-                className="text-xs font-medium leading-relaxed"
-                style={{ color: "#F5F0E8" }}
-              >
+              <p style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.5, color: "var(--text-primary)" }}>
                 {hadChanges
                   ? `${managerName} shaped your canvas — ${changeCount} adjustment${changeCount !== 1 ? "s" : ""} made.`
                   : `${managerName} reviewed your goals and signed off without changes.`}
               </p>
-              <p className="text-xs mt-1" style={{ color: "rgba(201,169,122,0.5)" }}>
+              <p style={{ fontSize: 12, marginTop: 4, color: "var(--text-tertiary)" }}>
                 {hadChanges ? "Tap to see what changed." : "You were read, not just processed."}
               </p>
             </div>
@@ -74,8 +71,7 @@ export default function QuietAcknowledgment({
 
           {/* Dismiss progress bar */}
           <motion.div
-            className="h-px"
-            style={{ background: "rgba(212,145,58,0.4)", transformOrigin: "left" }}
+            style={{ height: 2, background: "var(--brand-amber)", transformOrigin: "left", opacity: 0.5 }}
             initial={{ scaleX: 1 }}
             animate={{ scaleX: 0 }}
             transition={{ duration: 6, ease: "linear" }}

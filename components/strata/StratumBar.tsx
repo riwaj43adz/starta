@@ -35,7 +35,7 @@ export default function StratumBar({
   return (
     <div className={cn("space-y-1", className)}>
       <div
-        style={{ display: "flex", gap: "2px", overflow: "hidden", height: SIZE_HEIGHT[size] }}
+        style={{ display: "flex", gap: 2, overflow: "hidden", height: SIZE_HEIGHT[size] }}
         role="img"
         aria-label={`Stratum: ${displayLayers.map((l) => `${l.quarter}: ${l.isComplete ? l.depth : "pending"}`).join(", ")}`}
       >
@@ -45,7 +45,7 @@ export default function StratumBar({
             style={{
               flex: 1,
               transformOrigin: "left center",
-              backgroundColor: layer.isComplete ? depthToHex(layer.depth) : "#E8E3D8",
+              backgroundColor: layer.isComplete ? depthToHex(layer.depth) : "var(--surface-border-strong)",
             }}
             initial={animate ? { scaleX: 0, opacity: 0 } : false}
             animate={
@@ -61,14 +61,14 @@ export default function StratumBar({
       </div>
 
       {showLabels && (
-        <div style={{ display: "flex", gap: "2px" }}>
+        <div style={{ display: "flex", gap: 2 }}>
           {displayLayers.map((layer) => (
             <div
               key={layer.quarter}
+              className="text-label"
               style={{
                 flex: 1, textAlign: "center",
-                fontSize: "9px", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase",
-                color: layer.isComplete ? "#7A5C3E" : "#C9A97A",
+                color: layer.isComplete ? "var(--text-secondary)" : "var(--text-tertiary)",
               }}
             >
               {QUARTER_LABELS[layer.quarter]}
