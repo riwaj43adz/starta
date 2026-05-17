@@ -20,7 +20,7 @@ export default function ApprovalsPage() {
   if (!currentUser) return null;
   const team = getTeamForManager(currentUser.id);
   const pending = GOAL_SHEETS.filter(
-    sheet => team.some(m => m.id === sheet.userId) && sheet.status === "submitted" && !approved.includes(sheet.id)
+    sheet => team.some(m => m.id === sheet.userId) && sheet.status === "submitted" && !approved.includes(sheet.id) && !(sheet.id in returned)
   );
 
   const handleApprove = (sheet: GoalSheet) => {
