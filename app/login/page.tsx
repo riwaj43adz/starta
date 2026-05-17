@@ -4,139 +4,145 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/lib/store/useUserStore";
 import { USERS } from "@/lib/data/seed";
+import { ArrowRight, BarChart3, Target, Users, Shield } from "lucide-react";
+
+const PERSONAS = [
+  { id: "user-aarav",  name: "Aarav Mehta",    role: "Product Manager",        dept: "Engineering",    tag: "Employee view",   tagColor: "#5B8C6E",   desc: "Setting goals for the first time. Building something real." },
+  { id: "user-deepa",  name: "Deepa Krishnan",  role: "Senior Engineer",         dept: "Engineering",    tag: "Employee view",   tagColor: "#5B8C6E",   desc: "7 years in. Tired of invisible work." },
+  { id: "user-rajiv",  name: "Rajiv Sharma",    role: "Engineering Manager",     dept: "Engineering",    tag: "Manager view",    tagColor: "#4A7A9B",   desc: "12 direct reports. Needs the full picture." },
+  { id: "user-priya",  name: "Priya Nair",      role: "HR Business Partner",     dept: "Human Resources",tag: "Admin view",      tagColor: "#9B7A5B",   desc: "Owns the cycle. Builds the audit record." },
+];
+
+const FEATURES = [
+  { icon: Target,   label: "Goal Canvas",         desc: "Structured goal-setting with weightage allocation" },
+  { icon: BarChart3,label: "Performance Analytics",desc: "Radar charts, heatmaps, trend lines" },
+  { icon: Users,    label: "Team Intelligence",    desc: "Manager lens with pre-meeting briefs" },
+  { icon: Shield,   label: "Immutable Audit Trail",desc: "Every change logged and defensible" },
+];
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setCurrentUser } = useUserStore();
+  const { setCurrentUser, switchDemoRole } = useUserStore();
 
   const handleLogin = (userId: string) => {
     const user = USERS.find(u => u.id === userId);
-    if (user) {
-      setCurrentUser(user);
-      router.push("/my-strata");
-    }
+    if (!user) return;
+    setCurrentUser(user);
+    switchDemoRole(user.role as any);
+    router.push(user.role === "manager" ? "/lens" : user.role === "admin" ? "/map-room" : "/my-strata");
   };
 
-  const demoUsers = [
-    { id: "user-aarav", label: "Aarav Mehta", role: "Product Manager", color: "#C4603A", desc: "First full year. Anxious, ambitious." },
-    { id: "user-deepa", label: "Deepa Krishnan", role: "Senior Engineer", color: "#4A5E3A", desc: "7 years. Tired of invisible work." },
-    { id: "user-rajiv", label: "Rajiv Sharma", role: "Engineering Manager", color: "#D4913A", desc: "12 reports. Needs to remember." },
-    { id: "user-priya", label: "Priya Nair", role: "HR Business Partner", color: "#7A5C3E", desc: "Holds it together. Every March." },
-  ];
-
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden"
-      style={{ background: "#2C2A26" }}
-    >
-      {/* Geological strata background lines */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[0.15, 0.3, 0.45, 0.6, 0.75, 0.9].map((opacity, i) => (
-          <div
-            key={i}
-            className="absolute w-full"
-            style={{
-              top: `${15 + i * 12}%`,
-              height: "1px",
-              background: `rgba(201,169,122,${opacity * 0.06})`,
-            }}
-          />
-        ))}
-      </div>
+    <div style={{ minHeight: "100vh", background: "var(--surface-0)", display: "flex", overflow: "hidden" }}>
+      {/* Left panel */}
+      <div style={{ flex: "0 0 420px", background: "var(--surface-1)", borderRight: "1px solid var(--surface-border)", display: "flex", flexDirection: "column", padding: "48px 40px" }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "2.5rem", color: "var(--text-primary)", letterSpacing: "0.02em", lineHeight: 1 }}>
+            STRATA
+          </div>
+          <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.05em", marginTop: 4, textTransform: "uppercase", fontWeight: 600 }}>
+            Performance Intelligence Platform
+          </div>
+        </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="text-center mb-12 relative z-10"
-      >
-        {/* Wordmark */}
-        <h1
-          className="font-serif font-bold tracking-tight mb-3"
-          style={{ fontSize: "clamp(72px, 12vw, 120px)", color: "#F5F0E8", letterSpacing: "-3px", lineHeight: "0.9" }}
-        >
-          STRATA
-        </h1>
-        <p
-          className="font-serif italic text-lg"
-          style={{ color: "#C9A97A" }}
-        >
-          Every layer of effort is the story of what you are becoming.
-        </p>
-      </motion.div>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} style={{ marginTop: 40, marginBottom: 36 }}>
+          <p style={{ fontFamily: "DM Serif Display, serif", fontSize: "1.5rem", color: "var(--text-primary)", lineHeight: 1.3, fontStyle: "italic" }}>
+            "A record of becoming, not a tracker of tasks."
+          </p>
+          <p style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 12, lineHeight: 1.7 }}>
+            STRATA replaces annual performance review chaos with a living, layered record that captures achievement AND context.
+          </p>
+        </motion.div>
 
-      {/* Demo user selection */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="relative z-10 w-full max-w-md px-6"
-      >
-        <p
-          className="text-center text-xs font-semibold tracking-widest uppercase mb-6"
-          style={{ color: "rgba(201,169,122,0.4)" }}
-        >
-          Enter as
-        </p>
-
-        <div className="space-y-3">
-          {demoUsers.map((user, i) => (
-            <motion.button
-              key={user.id}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 + i * 0.08 }}
-              onClick={() => handleLogin(user.id)}
-              className="w-full text-left p-4 group transition-all duration-300"
-              style={{
-                background: "rgba(245,240,232,0.04)",
-                border: "1px solid rgba(201,169,122,0.12)",
-                borderLeft: `3px solid ${user.color}`,
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: "#F5F0E8" }}>
-                    {user.label}
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: user.color }}>
-                    {user.role}
-                  </p>
-                  <p className="text-xs mt-1 font-serif italic" style={{ color: "rgba(245,240,232,0.35)" }}>
-                    {user.desc}
-                  </p>
-                </div>
-                <div
-                  className="w-7 h-7 flex items-center justify-center transition-transform duration-200 group-hover:translate-x-1"
-                  style={{ color: "rgba(201,169,122,0.3)" }}
-                >
-                  →
-                </div>
+        {/* Features */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: "auto" }}>
+          {FEATURES.map(({ icon: Icon, label, desc }, i) => (
+            <motion.div key={label} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.07 }}
+              style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(232,162,58,0.1)", border: "1px solid rgba(232,162,58,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon size={14} style={{ color: "#E8A23A" }} />
               </div>
-            </motion.button>
+              <div>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-primary)" }}>{label}</div>
+                <div style={{ fontSize: 11.5, color: "var(--text-tertiary)", marginTop: 1 }}>{desc}</div>
+              </div>
+            </motion.div>
           ))}
         </div>
 
-        <p
-          className="text-center text-xs mt-8 font-serif italic"
-          style={{ color: "rgba(201,169,122,0.25)" }}
-        >
-          "We do not measure performance. We witness it."
-        </p>
-      </motion.div>
+        <div style={{ marginTop: 32, paddingTop: 20, borderTop: "1px solid var(--surface-border)" }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 6 }}>
+            Acme Corporation · FY 2025–26
+          </div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>Confidential · Internal Use Only</div>
+        </div>
+      </div>
 
-      {/* Layers bar at bottom */}
-      <div
-        className="fixed bottom-0 left-0 right-0 flex h-1.5"
-      >
-        {["#C4603A", "#D4913A", "#7A9170", "#4A5E3A", "#7A5C3E", "#4A5568"].map((color, i) => (
-          <motion.div
-            key={i}
-            className="flex-1"
-            style={{ background: color }}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 0.5, delay: 0.8 + i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+      {/* Right panel */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 60px" }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} style={{ width: "100%", maxWidth: 480 }}>
+          <div style={{ marginBottom: 32 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 8 }}>Demo — Select a user to continue</div>
+            <h2 style={{ fontFamily: "DM Serif Display, serif", fontSize: "1.75rem", color: "var(--text-primary)" }}>Who are you today?</h2>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {PERSONAS.map(({ id, name, role, dept, tag, tagColor, desc }, i) => (
+              <motion.button
+                key={id}
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 + i * 0.08 }}
+                onClick={() => handleLogin(id)}
+                style={{
+                  width: "100%", textAlign: "left",
+                  padding: "16px 18px",
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--surface-border)",
+                  borderRadius: 10, cursor: "pointer",
+                  transition: "all 200ms",
+                  display: "flex", alignItems: "center", gap: 14,
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = "var(--surface-border-strong)";
+                  e.currentTarget.style.background = "var(--surface-3)";
+                  e.currentTarget.style.transform = "translateX(4px)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = "var(--surface-border)";
+                  e.currentTarget.style.background = "var(--surface-2)";
+                  e.currentTarget.style.transform = "translateX(0)";
+                }}
+              >
+                {/* Avatar */}
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: `${tagColor}20`, border: `1px solid ${tagColor}30`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: tagColor, flexShrink: 0, letterSpacing: "0.04em" }}>
+                  {name.split(" ").map(n => n[0]).join("")}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 13.5, fontWeight: 600, color: "var(--text-primary)" }}>{name}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 7px", borderRadius: 3, background: `${tagColor}18`, color: tagColor, letterSpacing: "0.03em" }}>{tag}</span>
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "var(--text-tertiary)", marginTop: 1 }}>{role} · {dept}</div>
+                  <div style={{ fontSize: 11.5, fontFamily: "DM Serif Display", fontStyle: "italic", color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{desc}</div>
+                </div>
+                <ArrowRight size={14} style={{ color: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+              </motion.button>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textAlign: "center", marginTop: 28, fontStyle: "italic" }}>
+            Each persona has live data, pre-seeded goals, and 3 quarters of history.
+          </p>
+        </motion.div>
+      </div>
+
+      {/* Bottom strata bar */}
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 3, display: "flex" }}>
+        {["#C4503A","#E8A23A","#5B8C6E","#4A5E3A","#9B7A5B","#4A7A9B"].map((c, i) => (
+          <motion.div key={i} style={{ flex: 1, background: c }}
+            initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+            transition={{ duration: 0.5, delay: 0.7 + i * 0.07, ease: [0.25,0.46,0.45,0.94] }}
           />
         ))}
       </div>

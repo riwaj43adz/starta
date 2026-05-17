@@ -4,31 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  Layers, Target, Clock, Archive, Eye, Users,
-  MessageSquare, Share2, Map, Settings, FileText,
-  BarChart3, User, ChevronRight,
+  LayoutDashboard, Target, Clock, Archive,
+  Users, FileCheck, MessageSquare, Share2,
+  Map, Settings, FileText, BarChart3,
+  TrendingUp, Bell,
 } from "lucide-react";
 import { useUserStore } from "@/lib/store/useUserStore";
 import { getInitials } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 
 const EMPLOYEE_NAV = [
-  { label: "My Strata", href: "/my-strata", icon: Layers },
+  { label: "Dashboard", href: "/my-strata", icon: LayoutDashboard },
   { label: "Goal Canvas", href: "/canvas", icon: Target },
   { label: "This Quarter", href: "/check-in", icon: Clock },
-  { label: "My Layers", href: "/layers", icon: Archive },
+  { label: "My History", href: "/layers", icon: Archive },
+  { label: "Analytics", href: "/analytics", icon: TrendingUp },
 ];
 
 const MANAGER_NAV = [
-  { label: "Team Lens", href: "/lens", icon: Eye },
-  { label: "Approvals", href: "/lens/approvals", icon: FileText },
+  { label: "Team Overview", href: "/lens", icon: Users },
+  { label: "Approvals", href: "/lens/approvals", icon: FileCheck, badge: 2 },
   { label: "Check-in Room", href: "/lens/check-in-room", icon: MessageSquare },
   { label: "Shared Goals", href: "/lens/shared-goals", icon: Share2 },
 ];
 
 const ADMIN_NAV = [
   { label: "Map Room", href: "/map-room", icon: Map },
-  { label: "Cycles", href: "/map-room/cycles", icon: Settings },
+  { label: "Cycle Config", href: "/map-room/cycles", icon: Settings },
   { label: "Audit Trail", href: "/map-room/audit", icon: FileText },
   { label: "Reports", href: "/map-room/reports", icon: BarChart3 },
 ];
@@ -37,145 +38,80 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { currentUser, demoRole, switchDemoRole } = useUserStore();
 
-  const showManagerNav = demoRole === "manager" || demoRole === "admin";
-  const showAdminNav = demoRole === "admin";
+  const showManager = demoRole === "manager" || demoRole === "admin";
+  const showAdmin = demoRole === "admin";
 
   if (!currentUser) return null;
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/my-strata" && pathname.startsWith(href));
+
   return (
-    <aside
-      className="fixed left-0 top-0 bottom-0 w-56 flex flex-col z-40"
-      style={{
-        background: "#2C2A26",
-        borderRight: "1px solid rgba(201,169,122,0.08)",
-      }}
-    >
+    <aside className="sidebar">
       {/* Logo */}
-      <div
-        className="px-5 py-5"
-        style={{ borderBottom: "1px solid rgba(201,169,122,0.08)" }}
-      >
-        <Link href="/my-strata" className="block">
-          <span
-            className="font-serif text-2xl font-bold tracking-tight"
-            style={{ color: "#F5F0E8" }}
-          >
-            STRATA
-          </span>
-          <p
-            className="text-xs mt-0.5 leading-snug italic"
-            style={{ color: "rgba(201,169,122,0.5)", fontFamily: "Playfair Display, serif" }}
-          >
-            A record of becoming
-          </p>
+      <div className="sidebar-logo">
+        <Link href="/my-strata">
+          <div className="sidebar-brand">STRATA</div>
+          <div className="sidebar-tagline">Performance Intelligence</div>
         </Link>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
-        {/* Employee section */}
-        <div>
-          <p
-            className="text-xs font-semibold tracking-widest uppercase px-2 mb-2"
-            style={{ color: "rgba(201,169,122,0.35)" }}
-          >
-            My Work
-          </p>
-          {EMPLOYEE_NAV.map(({ label, href, icon: Icon }) => {
-            const active = pathname === href || pathname.startsWith(href + "/");
-            return (
-              <Link key={href} href={href} className="block">
-                <div
-                  className={cn(
-                    "nav-item",
-                    active && "active"
-                  )}
-                >
-                  <Icon size={14} />
-                  <span>{label}</span>
-                  {active && (
-                    <motion.div
-                      className="ml-auto w-1 h-1 rounded-full"
-                      style={{ background: "#D4913A" }}
-                      layoutId="nav-dot"
-                    />
-                  )}
-                </div>
-              </Link>
-            );
-          })}
+      <nav style={{ flex: 1, overflowY: "auto", padding: "8px 10px" }}>
+        {/* Employee */}
+        <div className="sidebar-section">
+          <div className="sidebar-section-label">My Workspace</div>
+          {EMPLOYEE_NAV.map(({ label, href, icon: Icon }) => (
+            <Link key={href} href={href}>
+              <div className={`nav-item ${isActive(href) ? "active" : ""}`}>
+                <Icon size={14} strokeWidth={isActive(href) ? 2.2 : 1.8} />
+                <span>{label}</span>
+              </div>
+            </Link>
+          ))}
         </div>
 
-        {/* Manager section */}
-        {showManagerNav && (
-          <div>
-            <p
-              className="text-xs font-semibold tracking-widest uppercase px-2 mb-2"
-              style={{ color: "rgba(201,169,122,0.35)" }}
-            >
-              The Lens
-            </p>
-            {MANAGER_NAV.map(({ label, href, icon: Icon }) => {
-              const active = pathname === href || pathname.startsWith(href + "/");
-              return (
-                <Link key={href} href={href} className="block">
-                  <div className={cn("nav-item", active && "active")}>
-                    <Icon size={14} />
-                    <span>{label}</span>
-                  </div>
-                </Link>
-              );
-            })}
+        {showManager && (
+          <div className="sidebar-section" style={{ marginTop: 8 }}>
+            <div className="sidebar-section-label">The Lens</div>
+            {MANAGER_NAV.map(({ label, href, icon: Icon, badge }) => (
+              <Link key={href} href={href}>
+                <div className={`nav-item ${isActive(href) ? "active" : ""}`}>
+                  <Icon size={14} strokeWidth={1.8} />
+                  <span>{label}</span>
+                  {badge && <span className="nav-badge">{badge}</span>}
+                </div>
+              </Link>
+            ))}
           </div>
         )}
 
-        {/* Admin section */}
-        {showAdminNav && (
-          <div>
-            <p
-              className="text-xs font-semibold tracking-widest uppercase px-2 mb-2"
-              style={{ color: "rgba(201,169,122,0.35)" }}
-            >
-              Map Room
-            </p>
-            {ADMIN_NAV.map(({ label, href, icon: Icon }) => {
-              const active = pathname === href || pathname.startsWith(href + "/");
-              return (
-                <Link key={href} href={href} className="block">
-                  <div className={cn("nav-item", active && "active")}>
-                    <Icon size={14} />
-                    <span>{label}</span>
-                  </div>
-                </Link>
-              );
-            })}
+        {showAdmin && (
+          <div className="sidebar-section" style={{ marginTop: 8 }}>
+            <div className="sidebar-section-label">Administration</div>
+            {ADMIN_NAV.map(({ label, href, icon: Icon }) => (
+              <Link key={href} href={href}>
+                <div className={`nav-item ${isActive(href) ? "active" : ""}`}>
+                  <Icon size={14} strokeWidth={1.8} />
+                  <span>{label}</span>
+                </div>
+              </Link>
+            ))}
           </div>
         )}
       </nav>
 
-      {/* Role switcher (demo) */}
-      <div
-        className="px-3 py-3"
-        style={{ borderTop: "1px solid rgba(201,169,122,0.08)" }}
-      >
-        <p
-          className="text-xs tracking-widest uppercase px-2 mb-2"
-          style={{ color: "rgba(201,169,122,0.3)" }}
-        >
-          Demo: Switch role
-        </p>
-        <div className="flex gap-1">
+      {/* Role switcher */}
+      <div style={{ padding: "10px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)", paddingLeft: 4, marginBottom: 6 }}>
+          Demo Mode
+        </div>
+        <div style={{ display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", borderRadius: 6, padding: 3 }}>
           {(["employee", "manager", "admin"] as const).map((role) => (
             <button
               key={role}
+              className={`role-pill ${demoRole === role ? "active" : ""}`}
               onClick={() => switchDemoRole(role)}
-              className="flex-1 py-1 text-xs font-medium tracking-wide capitalize transition-all duration-200"
-              style={{
-                borderRadius: "1px",
-                background: demoRole === role ? "rgba(212,145,58,0.2)" : "transparent",
-                color: demoRole === role ? "#D4913A" : "rgba(201,169,122,0.4)",
-                border: demoRole === role ? "1px solid rgba(212,145,58,0.3)" : "1px solid transparent",
-              }}
             >
               {role === "employee" ? "Aarav" : role === "manager" ? "Rajiv" : "Priya"}
             </button>
@@ -184,27 +120,24 @@ export default function Sidebar() {
       </div>
 
       {/* User */}
-      <div
-        className="px-4 py-3 flex items-center gap-3"
-        style={{ borderTop: "1px solid rgba(201,169,122,0.08)" }}
-      >
-        <div
-          className="w-8 h-8 flex items-center justify-center text-xs font-semibold flex-shrink-0"
-          style={{
-            background: "rgba(201,169,122,0.15)",
-            color: "#C9A97A",
-            borderRadius: "2px",
-          }}
-        >
+      <div style={{ padding: "12px 14px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{
+          width: 30, height: 30, borderRadius: 6,
+          background: "linear-gradient(135deg, rgba(232,162,58,0.3), rgba(232,162,58,0.1))",
+          border: "1px solid rgba(232,162,58,0.2)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 11, fontWeight: 700, color: "var(--brand-amber)",
+          flexShrink: 0,
+        }}>
           {getInitials(currentUser.name)}
         </div>
-        <div className="min-w-0">
-          <p className="text-xs font-medium truncate" style={{ color: "#F5F0E8" }}>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {currentUser.name}
-          </p>
-          <p className="text-xs truncate capitalize" style={{ color: "rgba(201,169,122,0.5)" }}>
-            {currentUser.role}
-          </p>
+          </div>
+          <div style={{ fontSize: 10.5, color: "var(--text-tertiary)", textTransform: "capitalize" }}>
+            {currentUser.role} · Engineering
+          </div>
         </div>
       </div>
     </aside>
