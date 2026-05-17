@@ -37,7 +37,7 @@ export default function LoginPage() {
       {/* Left panel */}
       <div style={{ flex: "0 0 420px", background: "var(--surface-1)", borderRight: "1px solid var(--surface-border)", display: "flex", flexDirection: "column", padding: "48px 40px" }}>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontFamily: "DM Serif Display, serif", fontSize: "2.5rem", color: "var(--text-primary)", letterSpacing: "0.02em", lineHeight: 1 }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "2.5rem", color: "var(--text-primary)", letterSpacing: "0.02em", lineHeight: 1 }}>
             STRATA
           </div>
           <div style={{ fontSize: 12, color: "var(--text-tertiary)", letterSpacing: "0.05em", marginTop: 4, textTransform: "uppercase", fontWeight: 600 }}>
@@ -46,10 +46,10 @@ export default function LoginPage() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} style={{ marginTop: 40, marginBottom: 36 }}>
-          <p style={{ fontFamily: "DM Serif Display, serif", fontSize: "1.5rem", color: "var(--text-primary)", lineHeight: 1.3, fontStyle: "italic" }}>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "1.5rem", color: "var(--text-primary)", lineHeight: 1.3, fontStyle: "italic" }}>
             "A record of becoming, not a tracker of tasks."
           </p>
-          <p style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 12, lineHeight: 1.7 }}>
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 12, lineHeight: 1.7 }}>
             STRATA replaces annual performance review chaos with a living, layered record that captures achievement AND context.
           </p>
         </motion.div>
@@ -59,8 +59,8 @@ export default function LoginPage() {
           {FEATURES.map(({ icon: Icon, label, desc }, i) => (
             <motion.div key={label} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.07 }}
               style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(232,162,58,0.1)", border: "1px solid rgba(232,162,58,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Icon size={14} style={{ color: "#E8A23A" }} />
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: "var(--brand-amber-dim)", border: "1px solid rgba(232,162,58,0.15)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon size={14} style={{ color: "var(--brand-amber)" }} />
               </div>
               <div>
                 <div style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-primary)" }}>{label}</div>
@@ -74,7 +74,7 @@ export default function LoginPage() {
           <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 6 }}>
             Acme Corporation · FY 2025–26
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.2)" }}>Confidential · Internal Use Only</div>
+          <div style={{ fontSize: 11, color: "var(--text-tertiary)", opacity: 0.7 }}>Confidential · Internal Use Only</div>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function LoginPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} style={{ width: "100%", maxWidth: 480 }}>
           <div style={{ marginBottom: 32 }}>
             <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--text-tertiary)", marginBottom: 8 }}>Demo — Select a user to continue</div>
-            <h2 style={{ fontFamily: "DM Serif Display, serif", fontSize: "1.75rem", color: "var(--text-primary)" }}>Who are you today?</h2>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: "1.75rem", color: "var(--text-primary)" }}>Who are you today?</h2>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -124,14 +124,14 @@ export default function LoginPage() {
                     <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 7px", borderRadius: 3, background: `${tagColor}18`, color: tagColor, letterSpacing: "0.03em" }}>{tag}</span>
                   </div>
                   <div style={{ fontSize: 11.5, color: "var(--text-tertiary)", marginTop: 1 }}>{role} · {dept}</div>
-                  <div style={{ fontSize: 11.5, fontFamily: "DM Serif Display", fontStyle: "italic", color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{desc}</div>
+                  <div style={{ fontSize: 11.5, fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--text-secondary)", opacity: 0.8, marginTop: 3 }}>{desc}</div>
                 </div>
-                <ArrowRight size={14} style={{ color: "rgba(255,255,255,0.2)", flexShrink: 0 }} />
+                <ArrowRight size={14} style={{ color: "var(--text-tertiary)", flexShrink: 0 }} />
               </motion.button>
             ))}
           </div>
 
-          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.2)", textAlign: "center", marginTop: 28, fontStyle: "italic" }}>
+          <p style={{ fontSize: 11, color: "var(--text-tertiary)", textAlign: "center", marginTop: 28, fontStyle: "italic" }}>
             Each persona has live data, pre-seeded goals, and 3 quarters of history.
           </p>
         </motion.div>
@@ -139,7 +139,7 @@ export default function LoginPage() {
 
       {/* Bottom strata bar */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, height: 3, display: "flex" }}>
-        {["#C4503A","#E8A23A","#5B8C6E","#4A5E3A","#9B7A5B","#4A7A9B"].map((c, i) => (
+        {["var(--status-danger)","var(--brand-amber)","var(--status-success)","var(--layer-growing)","var(--layer-solid)","var(--status-info)"].map((c, i) => (
           <motion.div key={i} style={{ flex: 1, background: c }}
             initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
             transition={{ duration: 0.5, delay: 0.7 + i * 0.07, ease: [0.25,0.46,0.45,0.94] }}

@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
 
 interface WeightageAllocatorProps {
   goals: { id: string; title: string; weightage: number; thrustArea?: string }[];
@@ -10,8 +9,12 @@ interface WeightageAllocatorProps {
 }
 
 const COLORS = [
-  "#C4603A", "#D4913A", "#7A9170", "#4A5E3A",
-  "#7A5C3E", "#4A5568", "#9E4A2A", "#C9A97A",
+  "var(--status-danger)",
+  "var(--brand-amber)",
+  "var(--status-success)",
+  "var(--layer-growing)",
+  "var(--layer-solid)",
+  "var(--status-info)",
 ];
 
 export default function WeightageAllocator({
@@ -23,11 +26,10 @@ export default function WeightageAllocator({
   const isComplete = total === 100;
 
   return (
-    <div className="space-y-3">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       {/* Bar */}
       <div
-        className="relative h-4 flex overflow-hidden"
-        style={{ borderRadius: "1px", background: "#E8E3D8" }}
+        style={{ position: "relative", height: 16, display: "flex", overflow: "hidden", borderRadius: 2, background: "var(--surface-border-strong)" }}
         role="img"
         aria-label={`Weight distribution: ${total}% allocated`}
       >
@@ -51,8 +53,7 @@ export default function WeightageAllocator({
         {/* Completion glow */}
         {isComplete && (
           <motion.div
-            className="absolute inset-0"
-            style={{ background: "rgba(212,145,58,0.12)" }}
+            style={{ position: "absolute", inset: 0, background: "var(--brand-amber-glow)", pointerEvents: "none" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 1.2, times: [0, 0.5, 1] }}
@@ -61,19 +62,17 @@ export default function WeightageAllocator({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-2">
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
         {goals.map((goal, i) => (
-          <div key={goal.id} className="flex items-center gap-1.5">
+          <div key={goal.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
-              className="w-2 h-2 rounded-none flex-shrink-0"
-              style={{ background: COLORS[i % COLORS.length] }}
+              style={{ width: 8, height: 8, borderRadius: 2, flexShrink: 0, background: COLORS[i % COLORS.length] }}
             />
-            <span className="text-xs" style={{ color: "#7A5C3E" }}>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>
               {goal.title.slice(0, 24)}{goal.title.length > 24 ? "…" : ""}
             </span>
             <span
-              className="text-xs font-semibold"
-              style={{ color: "#2C2A26" }}
+              style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}
             >
               {goal.weightage}%
             </span>
@@ -82,24 +81,23 @@ export default function WeightageAllocator({
       </div>
 
       {/* Total indicator */}
-      <div className="flex items-center justify-between">
-        <span className="text-xs" style={{ color: "#C9A97A" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4 }}>
+        <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
           {goals.length} {goals.length === 1 ? "goal" : "goals"} ·{" "}
           {isComplete ? (
-            <span style={{ color: "#7A9170" }}>Fully weighted</span>
+            <span style={{ color: "var(--status-success)" }}>Fully weighted</span>
           ) : total < 100 ? (
-            <span style={{ color: "#D4913A" }}>
+            <span style={{ color: "var(--brand-amber)" }}>
               {100 - total}% remaining
             </span>
           ) : (
-            <span style={{ color: "#C4603A" }}>
+            <span style={{ color: "var(--status-danger)" }}>
               {total - 100}% over — reduce a goal
             </span>
           )}
         </span>
         <span
-          className="text-sm font-semibold"
-          style={{ color: isComplete ? "#7A9170" : total > 100 ? "#C4603A" : "#D4913A" }}
+          style={{ fontSize: 14, fontWeight: 600, color: isComplete ? "var(--status-success)" : total > 100 ? "var(--status-danger)" : "var(--brand-amber)" }}
         >
           {total}%
         </span>
@@ -107,10 +105,7 @@ export default function WeightageAllocator({
 
       {/* Gentle validation message */}
       {!readOnly && total !== 100 && goals.length > 0 && (
-        <p
-          className="text-xs italic"
-          style={{ color: "rgba(122,92,62,0.6)" }}
-        >
+        <p style={{ fontSize: 12, fontStyle: "italic", color: "var(--text-tertiary)", marginTop: 4 }}>
           {total < 100
             ? "Adjust the weights until they reach 100% — every goal needs its proper weight."
             : "One of these goals needs a little less weight to make room for the others."}
