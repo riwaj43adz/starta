@@ -196,6 +196,94 @@ export const DEEPA_GOALS: Goal[] = [
   },
 ];
 
+// ─── KIRAN'S GOALS ───
+const KIRAN_GOALS: Goal[] = [
+  {
+    id: "goal-kiran-1",
+    sheetId: "sheet-kiran",
+    thrustArea: "Technical Innovation",
+    title: "Migrate 4 Services to New Infra Stack",
+    description: "Lead the migration of legacy services to the new Kubernetes-based infrastructure.",
+    uomType: "numeric_max",
+    targetValue: 4,
+    weightage: 50,
+    isShared: false,
+    isLocked: false,
+    displayOrder: 1,
+  },
+  {
+    id: "goal-kiran-2",
+    sheetId: "sheet-kiran",
+    thrustArea: "Learning & Development",
+    title: "Earn AWS Solutions Architect Certification",
+    description: "Complete the AWS SAA-C03 certification by Q2.",
+    uomType: "timeline",
+    targetValue: 1,
+    weightage: 30,
+    isShared: false,
+    isLocked: false,
+    displayOrder: 2,
+  },
+  {
+    id: "goal-kiran-shared",
+    sheetId: "sheet-kiran",
+    thrustArea: "Compliance & Risk",
+    title: "Platform Security Compliance",
+    description: "Achieve 100% security scan coverage across all services.",
+    uomType: "numeric_max",
+    targetValue: 100,
+    weightage: 20,
+    isShared: true,
+    sharedFromId: "goal-shared-security",
+    isLocked: false,
+    displayOrder: 3,
+  },
+];
+
+// ─── MEERA'S GOALS ───
+const MEERA_GOALS: Goal[] = [
+  {
+    id: "goal-meera-1",
+    sheetId: "sheet-meera",
+    thrustArea: "Customer Success",
+    title: "Reduce P1 Incident Response Time to <2hr",
+    description: "Improve on-call process and runbooks to consistently resolve P1 incidents within 2 hours.",
+    uomType: "numeric_min",
+    targetValue: 2,
+    weightage: 45,
+    isShared: false,
+    isLocked: false,
+    displayOrder: 1,
+  },
+  {
+    id: "goal-meera-2",
+    sheetId: "sheet-meera",
+    thrustArea: "Process Improvement",
+    title: "Implement Weekly Engineering Health Metrics",
+    description: "Define and publish a weekly engineering health dashboard covering velocity, quality, and reliability.",
+    uomType: "timeline",
+    targetValue: 1,
+    weightage: 35,
+    isShared: false,
+    isLocked: false,
+    displayOrder: 2,
+  },
+  {
+    id: "goal-meera-shared",
+    sheetId: "sheet-meera",
+    thrustArea: "Compliance & Risk",
+    title: "Platform Security Compliance",
+    description: "Achieve 100% security scan coverage.",
+    uomType: "numeric_max",
+    targetValue: 100,
+    weightage: 20,
+    isShared: true,
+    sharedFromId: "goal-shared-security",
+    isLocked: false,
+    displayOrder: 3,
+  },
+];
+
 // ─── GOAL SHEETS ───
 export const GOAL_SHEETS: GoalSheet[] = [
   {
@@ -221,6 +309,26 @@ export const GOAL_SHEETS: GoalSheet[] = [
     lockedAt: "2025-05-09T11:15:00Z",
     isFirstSubmission: false,
     goals: DEEPA_GOALS,
+  },
+  {
+    id: "sheet-kiran",
+    userId: "user-kiran",
+    cycleId: "cycle-fy2526",
+    intentionStatement: "To stop being the person who keeps the lights on and start being the person who redesigns the electrical grid. I want to leave this team with infrastructure they can trust for the next five years.",
+    status: "submitted",
+    submittedAt: "2025-05-20T11:00:00Z",
+    isFirstSubmission: false,
+    goals: KIRAN_GOALS,
+  },
+  {
+    id: "sheet-meera",
+    userId: "user-meera",
+    cycleId: "cycle-fy2526",
+    intentionStatement: "I want to build something that makes the next incident a learning moment rather than a crisis. This year is about turning chaos into systems.",
+    status: "submitted",
+    submittedAt: "2025-05-22T09:30:00Z",
+    isFirstSubmission: true,
+    goals: MEERA_GOALS,
   },
 ];
 

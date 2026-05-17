@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import { GOAL_SHEETS, USERS, getTeamForManager } from "@/lib/data/seed";
 import { useUserStore } from "@/lib/store/useUserStore";
 import WeightageAllocator from "@/components/strata/WeightageAllocator";
-import { Check, RotateCcw, Edit3 } from "lucide-react";
+import { Check, RotateCcw, MessageSquare, Target } from "lucide-react";
 import { toast } from "sonner";
 import type { GoalSheet } from "@/lib/types";
+
+const s = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.35, delay: i * 0.07 } });
 
 export default function ApprovalsPage() {
   const { currentUser } = useUserStore();
@@ -18,7 +20,7 @@ export default function ApprovalsPage() {
   if (!currentUser) return null;
   const team = getTeamForManager(currentUser.id);
   const pending = GOAL_SHEETS.filter(
-    s => team.some(m => m.id === s.userId) && s.status === "submitted" && !approved.includes(s.id)
+    sheet => team.some(m => m.id === sheet.userId) && sheet.status === "submitted" && !approved.includes(sheet.id)
   );
 
   const handleApprove = (sheet: GoalSheet) => {
@@ -39,27 +41,30 @@ export default function ApprovalsPage() {
   };
 
   return (
-    <div className="min-h-screen max-w-2xl px-8 py-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: "#C9A97A" }}>
-          Pending Approvals
-        </p>
-        <h1 className="font-serif text-3xl font-bold mb-2" style={{ color: "#2C2A26" }}>
+    <div className="page-container" style={{ maxWidth: 960 }}>
+      <motion.div {...s(0)} className="page-header">
+        <div className="text-label" style={{ marginBottom: 6 }}>The Lens · Pending Action</div>
+        <h1 className="text-display-lg">
           {pending.length > 0
-            ? `${pending.length} ${pending.length === 1 ? "canvas" : "canvases"} waiting for your eye.`
+            ? `${pending.length} Canvas${pending.length === 1 ? "" : "es"} Pending Review`
             : "You're all caught up."}
         </h1>
+        <p className="text-body" style={{ marginTop: 4 }}>
+          {pending.length > 0 
+            ? "Review your team's intentions for the year. This is the foundation of their record." 
+            : "Every intention has been reviewed and recorded."}
+        </p>
       </motion.div>
 
       {pending.length === 0 && (
-        <div className="p-8 text-center" style={{ border: "1px solid rgba(122,92,62,0.1)", borderRadius: "2px" }}>
-          <p className="font-serif italic text-lg" style={{ color: "#7A5C3E" }}>
-            Every canvas has been reviewed.
-          </p>
-        </div>
+        <motion.div {...s(1)} className="card card-md" style={{ textAlign: "center", padding: "48px 24px" }}>
+          <Check size={32} style={{ color: "var(--brand-amber)", margin: "0 auto 16px" }} />
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "1.25rem", color: "var(--text-primary)" }}>Zero pending reviews</p>
+          <p style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 8 }}>Your team's goals are locked and ready for Q1.</p>
+        </motion.div>
       )}
 
-      <div className="space-y-8">
+      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         {pending.map((sheet, i) => {
           const employee = USERS.find(u => u.id === sheet.userId);
           const isReturned = sheet.id in returned;
@@ -68,72 +73,69 @@ export default function ApprovalsPage() {
           return (
             <motion.div
               key={sheet.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="overflow-hidden"
-              style={{ border: "1px solid rgba(122,92,62,0.15)", borderRadius: "2px" }}
+              {...s(i + 1)}
+              className="card"
+              style={{ overflow: "hidden" }}
             >
               {/* Employee header */}
-              <div className="px-5 py-4" style={{ background: "#F5F0E8", borderBottom: "1px solid rgba(122,92,62,0.12)" }}>
-                <div className="flex items-center justify-between">
+              <div style={{ padding: "18px 24px", background: "var(--surface-3)", borderBottom: "1px solid var(--surface-border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 8, background: "var(--brand-amber-dim)", border: "1px solid rgba(232,162,58,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "var(--brand-amber)" }}>
+                    {employee?.name.split(" ").map(n => n[0]).join("")}
+                  </div>
                   <div>
-                    <p className="font-serif text-lg font-semibold" style={{ color: "#2C2A26" }}>
-                      {employee?.name}
-                    </p>
-                    <p className="text-xs" style={{ color: "#7A5C3E" }}>
-                      {employee?.department} · Submitted {new Date(sheet.submittedAt!).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                    <h3 style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{employee?.name}</h3>
+                    <p style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>
+                      {employee?.department} · Submitted {new Date(sheet.submittedAt!).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </p>
                   </div>
-                  <span className="text-xs px-2 py-0.5" style={{ background: "rgba(212,145,58,0.12)", color: "#D4913A", borderRadius: "1px" }}>
-                    Awaiting review
-                  </span>
                 </div>
+                <div className="badge badge-amber">Awaiting Review</div>
               </div>
 
-              {/* Intention statement — read this first */}
+              {/* Intention statement */}
               {sheet.intentionStatement && (
-                <div className="px-5 py-4" style={{ background: "rgba(44,42,38,0.02)", borderBottom: "1px solid rgba(122,92,62,0.08)" }}>
-                  <p className="text-xs font-semibold tracking-wide uppercase mb-1" style={{ color: "#C9A97A" }}>
-                    What {employee?.name.split(" ")[0]} wants to be known for
-                  </p>
-                  <p className="font-serif italic text-base leading-relaxed" style={{ color: "#2C2A26" }}>
+                <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--surface-border)" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--brand-amber)", marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+                    <MessageSquare size={12} />
+                    Their Intention
+                  </div>
+                  <p style={{ fontFamily: "var(--font-display)", fontSize: "1.125rem", fontStyle: "italic", color: "var(--text-primary)", lineHeight: 1.6 }}>
                     "{sheet.intentionStatement}"
                   </p>
                 </div>
               )}
 
-              {/* Goals */}
-              <div className="p-5">
-                <div className="space-y-3 mb-5">
+              {/* Goals list */}
+              <div style={{ padding: "24px" }}>
+                <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-secondary)", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+                  <Target size={14} />
+                  Proposed Goals
+                </div>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
                   {sheet.goals.map((goal) => (
                     <div
                       key={goal.id}
-                      className="p-3"
-                      style={{ border: "1px solid rgba(122,92,62,0.1)", borderRadius: "2px", background: "white" }}
+                      style={{ padding: "16px", background: "var(--surface-3)", borderRadius: "var(--radius-md)", border: "1px solid var(--surface-border)", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}
                     >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#C9A97A" }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--text-tertiary)" }}>
                             {goal.thrustArea}
-                          </p>
-                          <p className="text-sm font-semibold mt-0.5" style={{ color: "#2C2A26" }}>
-                            {goal.title}
-                          </p>
+                          </span>
                           {goal.isShared && (
-                            <p className="text-xs mt-0.5" style={{ color: "#D4913A" }}>
-                              Shared goal · delivered by you
-                            </p>
+                            <span style={{ fontSize: 9, padding: "2px 6px", background: "rgba(107,107,123,0.15)", color: "#8888A0", borderRadius: 3 }}>
+                              Shared Goal
+                            </span>
                           )}
                         </div>
-                        <div className="text-right">
-                          <p className="text-xs font-semibold" style={{ color: "#7A5C3E" }}>
-                            {goal.weightage}%
-                          </p>
-                          <p className="text-xs" style={{ color: "#C9A97A" }}>
-                            Target: {goal.targetValue}
-                          </p>
-                        </div>
+                        <h4 style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>{goal.title}</h4>
+                        <p style={{ fontSize: 12.5, color: "var(--text-secondary)", lineHeight: 1.5 }}>{goal.description}</p>
+                      </div>
+                      <div style={{ textAlign: "right", minWidth: 80 }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, fontFamily: "var(--font-display)", color: "var(--brand-amber)" }}>{goal.weightage}%</div>
+                        <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 2 }}>Target: {goal.targetValue}</div>
                       </div>
                     </div>
                   ))}
@@ -144,33 +146,32 @@ export default function ApprovalsPage() {
                   goals={sheet.goals.map(g => ({ id: g.id, title: g.title, weightage: g.weightage }))}
                 />
 
-                {/* Return comment */}
-                <div className="mt-5">
-                  <label className="text-xs font-semibold tracking-wide uppercase block mb-1" style={{ color: "#C9A97A" }}>
-                    Note for {employee?.name.split(" ")[0]} (required if returning)
+                {/* Return Note */}
+                <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px dashed var(--surface-border-strong)" }}>
+                  <label style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>
+                    Manager Note
                   </label>
                   <textarea
-                    className="strata-input"
-                    rows={2}
-                    placeholder="Not a rejection — a question. What would you like them to reconsider?"
+                    className="context-field"
+                    placeholder="Not a rejection — a question. What would you like them to reconsider? (Required only if returning)"
                     value={returnComment[sheet.id] ?? ""}
                     onChange={e => setReturnComment(prev => ({ ...prev, [sheet.id]: e.target.value }))}
-                    style={{ width: "100%", resize: "vertical" }}
                   />
                 </div>
 
-                <div className="flex items-center gap-3 mt-4">
+                {/* Actions */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16 }}>
                   <button
                     onClick={() => handleApprove(sheet)}
-                    className="btn-amber flex items-center gap-2"
+                    className="btn-primary"
                   >
-                    <Check size={14} /> Approve canvas
+                    <Check size={14} /> Approve Canvas
                   </button>
                   <button
                     onClick={() => handleReturn(sheet)}
-                    className="btn-secondary flex items-center gap-2"
+                    className="btn-secondary"
                   >
-                    <RotateCcw size={14} /> Return with note
+                    <RotateCcw size={14} /> Return for Revision
                   </button>
                 </div>
               </div>
