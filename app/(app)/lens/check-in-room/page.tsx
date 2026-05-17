@@ -1,30 +1,32 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PRE_MEETING_BRIEFS, getCheckInComments, getUserGoalSheet, getUserUpdates } from "@/lib/data/seed";
+import { PRE_MEETING_BRIEFS } from "@/lib/data/seed";
 import PreMeetingBriefCard from "@/components/strata/PreMeetingBriefCard";
 import { useState } from "react";
 import { toast } from "sonner";
+import { MessageSquare } from "lucide-react";
 
 export default function CheckInRoomPage() {
   const [managerComments, setManagerComments] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<string[]>([]);
 
   return (
-    <div className="min-h-screen max-w-2xl px-8 py-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: "#C9A97A" }}>
+    <div className="page-container" style={{ maxWidth: 860 }}>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="page-header">
+        <p className="text-label" style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 6 }}>
+          <MessageSquare size={12} />
           Check-in Room
         </p>
-        <h1 className="font-serif text-3xl font-bold mb-2" style={{ color: "#2C2A26" }}>
+        <h1 className="text-display-lg" style={{ marginBottom: 8 }}>
           Q3 check-ins.
         </h1>
-        <p className="font-serif italic text-sm" style={{ color: "#7A5C3E" }}>
+        <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 16, color: "var(--text-tertiary)" }}>
           Read the briefs. Then have the conversations.
         </p>
       </motion.div>
 
-      <div className="space-y-8">
+      <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
         {PRE_MEETING_BRIEFS.map((brief, i) => {
           const isSubmitted = submitted.includes(brief.id);
 
@@ -39,12 +41,12 @@ export default function CheckInRoomPage() {
 
               {/* Manager comment entry */}
               {!isSubmitted ? (
-                <div className="mt-3 p-4" style={{ border: "1px solid rgba(122,92,62,0.12)", borderRadius: "2px", background: "white" }}>
-                  <label className="text-xs font-semibold tracking-wide uppercase block mb-2" style={{ color: "#C9A97A" }}>
+                <div className="card" style={{ marginTop: 12, padding: 20 }}>
+                  <label className="text-label" style={{ display: "block", marginBottom: 8, color: "var(--brand-amber)" }}>
                     Your check-in note for {brief.employee?.name.split(" ")[0]}
                   </label>
                   <textarea
-                    className="strata-input w-full"
+                    className="strata-input"
                     rows={3}
                     placeholder="A response to what they shared. What you noticed. What you want them to carry forward."
                     value={managerComments[brief.id] ?? ""}
@@ -52,7 +54,8 @@ export default function CheckInRoomPage() {
                     style={{ resize: "vertical" }}
                   />
                   <button
-                    className="btn-primary mt-3"
+                    className="btn-primary"
+                    style={{ marginTop: 12 }}
                     onClick={() => {
                       if (!managerComments[brief.id]?.trim()) {
                         toast.error("Add a note before submitting the check-in.");
@@ -67,13 +70,13 @@ export default function CheckInRoomPage() {
                 </div>
               ) : (
                 <div
-                  className="mt-3 p-4"
-                  style={{ borderLeft: "2px solid #7A9170", background: "rgba(74,94,58,0.04)", borderRadius: "0 2px 2px 0" }}
+                  className="card"
+                  style={{ marginTop: 12, padding: 20, borderLeft: "2px solid var(--status-success)", background: "var(--surface-3)" }}
                 >
-                  <p className="text-xs font-semibold tracking-wide uppercase mb-1" style={{ color: "#7A9170" }}>
+                  <p className="text-label" style={{ color: "var(--status-success)", marginBottom: 6 }}>
                     Your note · Sent
                   </p>
-                  <p className="text-sm font-serif italic leading-relaxed" style={{ color: "#4A5568" }}>
+                  <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 15, color: "var(--text-secondary)", lineHeight: 1.6 }}>
                     "{managerComments[brief.id]}"
                   </p>
                 </div>

@@ -3,11 +3,11 @@
 import { motion } from "framer-motion";
 import { useUserStore } from "@/lib/store/useUserStore";
 import { getTeamForManager, GOAL_SHEETS, getUserGoalSheet, getUserUpdates, PRE_MEETING_BRIEFS } from "@/lib/data/seed";
-import { buildStratumLayers, depthToHex } from "@/lib/utils/scoring";
+import { buildStratumLayers } from "@/lib/utils/scoring";
 import StratumBar from "@/components/strata/StratumBar";
 import { getInitials } from "@/lib/utils";
 import Link from "next/link";
-import { FileCheck, MessageSquare, ChevronRight, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { ChevronRight, AlertTriangle } from "lucide-react";
 import type { GoalSheet, User } from "@/lib/types";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip } from "recharts";
 
@@ -30,49 +30,49 @@ function MemberCard({ user, sheet, idx }: { user: User; sheet?: GoalSheet; idx: 
   const hasBrief = PRE_MEETING_BRIEFS.some(b => b.employeeId === user.id);
 
   const statusMap = {
-    submitted: { label: "Needs review", color: "#E8A23A", bg: "rgba(232,162,58,0.12)" },
-    locked:    { label: "Approved",     color: "#4A9B6E", bg: "rgba(74,155,110,0.12)" },
-    approved:  { label: "Approved",     color: "#4A9B6E", bg: "rgba(74,155,110,0.12)" },
-    draft:     { label: "Draft",        color: "#6B6B7B", bg: "rgba(107,107,123,0.12)" },
-    returned:  { label: "Returned",     color: "#C4503A", bg: "rgba(196,80,58,0.12)" },
+    submitted: { label: "Needs review", color: "var(--brand-amber)" },
+    locked:    { label: "Approved",     color: "var(--status-success)" },
+    approved:  { label: "Approved",     color: "var(--status-success)" },
+    draft:     { label: "Draft",        color: "var(--text-tertiary)" },
+    returned:  { label: "Returned",     color: "var(--status-danger)" },
   };
-  const st = sheet ? statusMap[sheet.status] : { label: "No canvas", color: "#6B6B7B", bg: "rgba(107,107,123,0.1)" };
+  const st = sheet ? statusMap[sheet.status] : { label: "No canvas", color: "var(--text-tertiary)" };
 
   return (
-    <motion.div {...s(idx)} className="card card-md card-hover" style={{ position: "relative" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(232,162,58,0.12)", border: "1px solid rgba(232,162,58,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#E8A23A", flexShrink: 0 }}>
+    <motion.div {...s(idx)} className="card card-hover" style={{ position: "relative", padding: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <div style={{ width: 40, height: 40, borderRadius: 8, background: "var(--brand-amber-dim)", border: "1px solid rgba(232,162,58,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, color: "var(--brand-amber)", flexShrink: 0 }}>
             {getInitials(user.name)}
           </div>
           <div>
-            <div style={{ fontSize: 13.5, fontWeight: 600, color: "var(--text-primary)" }}>{user.name}</div>
-            <div style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 1 }}>{user.role} · {user.department}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>{user.name}</div>
+            <div style={{ fontSize: 12, color: "var(--text-tertiary)", marginTop: 2 }}>{user.role} · {user.department}</div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           {hasBrief && (
-            <span style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: "0.06em", padding: "3px 8px", borderRadius: 4, background: "rgba(74,122,232,0.15)", color: "#6B9CE8" }}>Brief ready</span>
+            <span className="badge badge-blue">Brief ready</span>
           )}
-          <span style={{ fontSize: 9.5, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: st.bg, color: st.color }}>{st.label}</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: st.color }}>{st.label}</span>
         </div>
       </div>
 
       <StratumBar layers={strata} size="sm" showLabels animate />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 12 }}>
-        <div style={{ fontSize: 11, color: "var(--text-tertiary)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 16 }}>
+        <div style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
           {formed.length}/4 layers · {sheet?.goals.length ?? 0} goals
         </div>
         {latest && (
-          <div style={{ fontSize: 13, fontWeight: 700, color: depthToHex(latest.depth) }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>
             Q{formed.length}: {Math.round(latest.averageScore)}%
           </div>
         )}
       </div>
 
       {sheet?.intentionStatement && (
-        <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.04)", fontSize: 11.5, fontFamily: "DM Serif Display", fontStyle: "italic", color: "rgba(255,255,255,0.3)", lineHeight: 1.5 }}>
+        <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid var(--surface-border-strong)", fontSize: 13, fontFamily: "var(--font-display)", fontStyle: "italic", color: "var(--text-secondary)", lineHeight: 1.6 }}>
           "{sheet.intentionStatement.slice(0, 100)}…"
         </div>
       )}
@@ -90,47 +90,47 @@ export default function LensPage() {
     <div className="page-container">
       <motion.div {...s(0)} className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
-          <div className="text-label" style={{ marginBottom: 6 }}>The Lens · Manager View</div>
+          <div className="text-label" style={{ marginBottom: 8 }}>The Lens · Manager View</div>
           <h1 className="text-display-lg">Engineering Team</h1>
-          <p style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: 4 }}>{team.length} direct reports · FY 2025–26</p>
+          <p style={{ fontSize: 14, color: "var(--text-tertiary)", marginTop: 8 }}>{team.length} direct reports · FY 2025–26</p>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Link href="/lens/check-in-room"><button className="btn-secondary" style={{ fontSize: 12 }}>Check-in Room</button></Link>
+        <div style={{ display: "flex", gap: 12 }}>
+          <Link href="/lens/check-in-room"><button className="btn-secondary">Check-in Room</button></Link>
           <Link href="/lens/approvals"><button className="btn-primary">Approvals {pending.length > 0 && `(${pending.length})`}</button></Link>
         </div>
       </motion.div>
 
       {/* Alert banner */}
       {pending.length > 0 && (
-        <motion.div {...s(1)} style={{ padding: "12px 16px", background: "rgba(232,162,58,0.07)", border: "1px solid rgba(232,162,58,0.2)", borderRadius: 8, marginBottom: 20, display: "flex", alignItems: "center", gap: 12 }}>
-          <AlertTriangle size={15} style={{ color: "#E8A23A", flexShrink: 0 }} />
-          <span style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>
-            <strong style={{ color: "#E8A23A" }}>{pending.length} canvas{pending.length > 1 ? "es" : ""}</strong> waiting for your review — each is someone's intention for the year.
+        <motion.div {...s(1)} className="card" style={{ padding: "16px 20px", background: "var(--brand-amber-glow)", borderLeft: "3px solid var(--brand-amber)", marginBottom: 32, display: "flex", alignItems: "center", gap: 16 }}>
+          <AlertTriangle size={18} style={{ color: "var(--brand-amber)", flexShrink: 0 }} />
+          <span style={{ fontSize: 14, color: "var(--text-primary)" }}>
+            <strong style={{ color: "var(--brand-amber)" }}>{pending.length} canvas{pending.length > 1 ? "es" : ""}</strong> waiting for your review — each is someone's intention for the year.
           </span>
           <Link href="/lens/approvals" style={{ marginLeft: "auto" }}>
-            <button className="btn-ghost" style={{ fontSize: 12, color: "#E8A23A" }}>Review now <ChevronRight size={11} /></button>
+            <button className="btn-ghost" style={{ color: "var(--brand-amber)" }}>Review now <ChevronRight size={14} /></button>
           </Link>
         </motion.div>
       )}
 
       {/* KPI Strip */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
         {[
-          { label: "Team Avg Score", value: "78%", note: "↑ 8pp from Q2", color: "#E8A23A" },
-          { label: "Check-ins Submitted", value: "3/4", note: "Q3 — Meera pending", color: "#5B8C6E" },
-          { label: "Canvases Approved", value: "2/4", note: "2 pending review", color: "#4A7A9B" },
-          { label: "Briefs Ready", value: `${PRE_MEETING_BRIEFS.length}`, note: "Pre-meeting intel", color: "#9B7A5B" },
+          { label: "Team Avg Score", value: "78%", note: "↑ 8pp from Q2", color: "var(--brand-amber)" },
+          { label: "Check-ins Submitted", value: "3/4", note: "Q3 — Meera pending", color: "var(--status-success)" },
+          { label: "Canvases Approved", value: "2/4", note: "2 pending review", color: "var(--status-info)" },
+          { label: "Briefs Ready", value: `${PRE_MEETING_BRIEFS.length}`, note: "Pre-meeting intel", color: "var(--layer-solid)" },
         ].map(({ label, value, note, color }, i) => (
           <motion.div key={label} {...s(i + 2)} className="metric-card">
             <span className="metric-label">{label}</span>
-            <div className="metric-value" style={{ fontSize: "1.75rem", color }}>{value}</div>
-            <span style={{ fontSize: 11, color: "var(--text-tertiary)" }}>{note}</span>
+            <div className="metric-value" style={{ color }}>{value}</div>
+            <span style={{ fontSize: 12, color: "var(--text-tertiary)" }}>{note}</span>
           </motion.div>
         ))}
       </div>
 
       {/* Team grid + radar */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 32 }}>
         {team.map((member, i) => {
           const sheet = getUserGoalSheet(member.id);
           return <MemberCard key={member.id} user={member} sheet={sheet} idx={i + 6} />;
@@ -138,53 +138,53 @@ export default function LensPage() {
       </div>
 
       {/* Team radar comparison */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 16 }}>
         <motion.div {...s(10)} className="chart-container">
           <div className="chart-title">Team Competency Comparison</div>
           <div className="chart-subtitle">Across 6 thrust areas — Q3 performance</div>
           <ResponsiveContainer width="100%" height={260}>
             <RadarChart data={teamRadar}>
-              <PolarGrid stroke="rgba(255,255,255,0.05)" />
-              <PolarAngleAxis dataKey="axis" tick={{ fontSize: 10.5, fill: "rgba(255,255,255,0.4)", fontFamily: "DM Sans" }} />
-              <Radar name="Aarav" dataKey="aarav" stroke="#E8A23A" fill="rgba(232,162,58,0.08)" strokeWidth={1.8} dot={false} />
-              <Radar name="Deepa" dataKey="deepa" stroke="#5B8C6E" fill="rgba(91,140,110,0.06)" strokeWidth={1.8} dot={false} />
-              <Radar name="Kiran" dataKey="kiran" stroke="#4A7A9B" fill="rgba(74,122,155,0.05)" strokeWidth={1.5} dot={false} strokeDasharray="4 3" />
-              <Radar name="Meera" dataKey="meera" stroke="#9B7A5B" fill="rgba(155,122,91,0.05)" strokeWidth={1.5} dot={false} strokeDasharray="4 3" />
-              <Tooltip contentStyle={{ background: "#242428", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, fontSize: 11 }} />
+              <PolarGrid stroke="var(--surface-border)" />
+              <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: "var(--text-secondary)", fontFamily: "var(--font-body)" }} />
+              <Radar name="Aarav" dataKey="aarav" stroke="#E8A23A" fill="rgba(232,162,58,0.1)" strokeWidth={1.8} dot={false} />
+              <Radar name="Deepa" dataKey="deepa" stroke="#5B8C6E" fill="rgba(91,140,110,0.1)" strokeWidth={1.8} dot={false} />
+              <Radar name="Kiran" dataKey="kiran" stroke="#4A7A9B" fill="rgba(74,122,155,0.1)" strokeWidth={1.5} dot={false} strokeDasharray="4 3" />
+              <Radar name="Meera" dataKey="meera" stroke="#9B7A5B" fill="rgba(155,122,91,0.1)" strokeWidth={1.5} dot={false} strokeDasharray="4 3" />
+              <Tooltip contentStyle={{ background: "var(--surface-3)", border: "1px solid var(--surface-border)", borderRadius: 6, fontSize: 12, color: "var(--text-primary)" }} />
             </RadarChart>
           </ResponsiveContainer>
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", marginTop: 12 }}>
             {[
               { name: "Aarav", color: "#E8A23A" }, { name: "Deepa", color: "#5B8C6E" },
               { name: "Kiran", color: "#4A7A9B" }, { name: "Meera", color: "#9B7A5B" },
             ].map(l => (
-              <div key={l.name} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ width: 20, height: 2, background: l.color, borderRadius: 1 }} />
-                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{l.name}</span>
+              <div key={l.name} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 20, height: 3, background: l.color, borderRadius: 1.5 }} />
+                <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{l.name}</span>
               </div>
             ))}
           </div>
         </motion.div>
 
         {/* Pre-meeting briefs */}
-        <motion.div {...s(11)} className="card card-md">
-          <div className="card-header">
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>Pre-Meeting Briefs</div>
+        <motion.div {...s(11)} className="card">
+          <div className="card-header" style={{ padding: "20px 24px" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>Pre-Meeting Briefs</div>
             <Link href="/lens/check-in-room">
-              <button className="btn-ghost" style={{ fontSize: 11 }}>Open room <ChevronRight size={10} /></button>
+              <button className="btn-ghost">Open room <ChevronRight size={14} /></button>
             </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 24px 24px" }}>
             {PRE_MEETING_BRIEFS.map(brief => (
-              <div key={brief.id} style={{ padding: "12px 14px", background: "var(--surface-3)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.04)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-primary)" }}>{brief.employee?.name}</span>
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", background: "rgba(74,122,232,0.15)", color: "#6B9CE8", borderRadius: 3 }}>{brief.quarter}</span>
+              <div key={brief.id} style={{ padding: 16, background: "var(--surface-3)", borderRadius: "var(--radius-lg)", border: "1px solid var(--surface-border)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{brief.employee?.name}</span>
+                  <span className="badge badge-blue">{brief.quarter}</span>
                 </div>
-                <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.55 }}>{brief.whatChanged}</p>
-                <div style={{ marginTop: 8, padding: "8px 10px", background: "rgba(232,162,58,0.06)", borderLeft: "2px solid rgba(232,162,58,0.4)", borderRadius: "0 4px 4px 0" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(232,162,58,0.7)", textTransform: "uppercase", letterSpacing: "0.07em" }}>Focus: </span>
-                  <span style={{ fontSize: 11.5, color: "rgba(255,255,255,0.6)" }}>{brief.suggestedFocus.slice(0, 90)}…</span>
+                <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>{brief.whatChanged}</p>
+                <div style={{ marginTop: 12, padding: "12px 14px", background: "var(--brand-amber-glow)", borderLeft: "2px solid var(--brand-amber)", borderRadius: "0 4px 4px 0" }}>
+                  <span className="text-label" style={{ color: "var(--brand-amber)" }}>Focus: </span>
+                  <span style={{ fontSize: 13, color: "var(--text-primary)" }}>{brief.suggestedFocus.slice(0, 90)}…</span>
                 </div>
               </div>
             ))}

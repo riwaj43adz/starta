@@ -6,20 +6,20 @@ import { formatDate } from "@/lib/utils";
 
 export default function AuditPage() {
   return (
-    <div className="min-h-screen max-w-3xl px-8 py-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: "#C9A97A" }}>
+    <div className="page-container" style={{ maxWidth: 860 }}>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="page-header">
+        <p className="text-label" style={{ marginBottom: 8 }}>
           Audit Trail
         </p>
-        <h1 className="font-serif text-3xl font-bold mb-2" style={{ color: "#2C2A26" }}>
+        <h1 className="text-display-lg" style={{ marginBottom: 8 }}>
           The field journal.
         </h1>
-        <p className="text-sm font-serif italic" style={{ color: "#7A5C3E" }}>
+        <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 16, color: "var(--text-tertiary)" }}>
           Every post-lock change. Every hand that touched the record. Immutable.
         </p>
       </motion.div>
 
-      <div className="space-y-6">
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         {AUDIT_LOG.map((entry, i) => {
           const actor = USERS.find(u => u.id === entry.actorId);
 
@@ -29,53 +29,55 @@ export default function AuditPage() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="journal-entry"
+              className="card"
+              style={{ padding: 24 }}
             >
-              <div className="flex items-start justify-between mb-2">
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 12 }}>
                 <div>
-                  <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: "#C9A97A" }}>
+                  <p className="text-label" style={{ color: "var(--brand-amber)" }}>
                     {entry.entityType.replace(/_/g, " ")} · {entry.action.replace(/_/g, " ")}
                   </p>
-                  <p className="text-sm font-semibold mt-0.5" style={{ color: "#2C2A26" }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)", marginTop: 4 }}>
                     {actor?.name ?? "System"}
                   </p>
                 </div>
-                <p className="text-xs" style={{ color: "#C9A97A" }}>
+                <p style={{ fontSize: 12, color: "var(--text-tertiary)" }}>
                   {formatDate(entry.createdAt)}
                 </p>
               </div>
 
               {entry.fieldName && (
-                <div className="mt-2 flex gap-4 text-xs">
+                <div style={{ marginTop: 12, display: "flex", gap: 24, fontSize: 13 }}>
                   <div>
-                    <span className="font-semibold" style={{ color: "#9E4A2A" }}>Before: </span>
-                    <span style={{ color: "#4A5568" }}>{entry.oldValue}</span>
+                    <span style={{ fontWeight: 600, color: "var(--status-danger)" }}>Before: </span>
+                    <span style={{ color: "var(--text-secondary)" }}>{entry.oldValue}</span>
                   </div>
                   <div>
-                    <span className="font-semibold" style={{ color: "#4A5E3A" }}>After: </span>
-                    <span style={{ color: "#4A5568" }}>{entry.newValue}</span>
+                    <span style={{ fontWeight: 600, color: "var(--status-success)" }}>After: </span>
+                    <span style={{ color: "var(--text-secondary)" }}>{entry.newValue}</span>
                   </div>
                 </div>
               )}
 
               {entry.reason && (
                 <div
-                  className="mt-3 px-3 py-2"
                   style={{
-                    borderLeft: "2px solid #C9A97A",
-                    background: "rgba(201,169,122,0.04)",
+                    marginTop: 16, padding: "12px 16px",
+                    borderLeft: "2px solid var(--brand-amber)",
+                    background: "var(--brand-amber-glow)",
+                    borderRadius: "0 4px 4px 0"
                   }}
                 >
-                  <p className="text-xs font-semibold tracking-wide uppercase mb-1" style={{ color: "#C9A97A" }}>
+                  <p className="text-label" style={{ color: "var(--brand-amber)", marginBottom: 4 }}>
                     Reason
                   </p>
-                  <p className="text-sm font-serif italic leading-relaxed" style={{ color: "#4A5568" }}>
+                  <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 14, color: "var(--text-primary)", lineHeight: 1.6 }}>
                     {entry.reason}
                   </p>
                 </div>
               )}
 
-              <p className="text-xs mt-2" style={{ color: "rgba(122,92,62,0.4)" }}>
+              <p style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 16 }}>
                 Recorded {new Date(entry.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })} · Immutable
               </p>
             </motion.div>
@@ -85,13 +87,13 @@ export default function AuditPage() {
 
       {/* Callout */}
       <div
-        className="mt-10 p-4"
-        style={{ borderLeft: "3px solid #D4913A", background: "rgba(212,145,58,0.04)" }}
+        className="card"
+        style={{ marginTop: 40, padding: 24, borderLeft: "3px solid var(--brand-amber)", background: "var(--surface-3)" }}
       >
-        <p className="text-sm" style={{ color: "#2C2A26" }}>
-          <strong>Could you defend this decision in an appraisal dispute?</strong>
+        <p style={{ fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
+          Could you defend this decision in an appraisal dispute?
         </p>
-        <p className="text-sm mt-1" style={{ color: "#7A5C3E" }}>
+        <p style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 6 }}>
           Yes. Confidently. That is Strata.
         </p>
       </div>

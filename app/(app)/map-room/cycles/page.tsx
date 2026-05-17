@@ -24,54 +24,54 @@ export default function CyclesPage() {
   ];
 
   return (
-    <div className="min-h-screen max-w-2xl px-8 py-8">
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-2" style={{ color: "#C9A97A" }}>
-          <Settings size={12} className="inline mr-1.5" />
+    <div className="page-container" style={{ maxWidth: 860 }}>
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="page-header">
+        <p className="text-label" style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+          <Settings size={12} />
           Cycle Management
         </p>
-        <h1 className="font-serif text-3xl font-bold mb-2" style={{ color: "#2C2A26" }}>
+        <h1 className="text-display-lg" style={{ marginBottom: 8 }}>
           {cycle.name}
         </h1>
-        <p className="text-sm" style={{ color: "#7A5C3E" }}>
+        <p className="text-body">
           Configure when windows open and close. Changes take effect immediately.
         </p>
       </motion.div>
 
       {/* Active cycle toggle */}
       <div
-        className="p-4 mb-6 flex items-center justify-between"
-        style={{ background: "rgba(74,94,58,0.06)", border: "1px solid rgba(74,94,58,0.15)", borderRadius: "2px" }}
+        className="card"
+        style={{ padding: "16px 20px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", borderLeft: "3px solid var(--status-success)" }}
       >
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full" style={{ background: "#7A9170" }} />
-          <span className="text-sm font-medium" style={{ color: "#2C2A26" }}>Active cycle</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--status-success)" }} />
+          <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>Active cycle</span>
         </div>
-        <span className="text-xs" style={{ color: "#7A9170" }}>Running</span>
+        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--status-success)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Running</span>
       </div>
 
       {/* Windows */}
-      <div className="space-y-4 mb-8">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
         {windows.map((win, i) => (
           <motion.div
             key={win.label}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="p-4"
-            style={{ background: "white", border: "1px solid rgba(122,92,62,0.12)", borderRadius: "2px" }}
+            className="card"
+            style={{ padding: 20 }}
           >
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar size={14} style={{ color: "#C9A97A" }} />
-              <p className="text-sm font-semibold" style={{ color: "#2C2A26" }}>{win.label}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+              <Calendar size={15} style={{ color: "var(--brand-amber)" }} />
+              <p style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>{win.label}</p>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div>
-                <label className="text-xs font-semibold tracking-wide uppercase block mb-1" style={{ color: "#C9A97A" }}>Opens</label>
+                <label className="text-label" style={{ display: "block", marginBottom: 6 }}>Opens</label>
                 <input type="date" className="strata-input" defaultValue={win.opens} />
               </div>
               <div>
-                <label className="text-xs font-semibold tracking-wide uppercase block mb-1" style={{ color: "#C9A97A" }}>Closes</label>
+                <label className="text-label" style={{ display: "block", marginBottom: 6 }}>Closes</label>
                 <input type="date" className="strata-input" defaultValue={win.closes} />
               </div>
             </div>
@@ -81,14 +81,14 @@ export default function CyclesPage() {
 
       {/* Late submissions */}
       <div
-        className="p-4 mb-6"
-        style={{ borderLeft: "3px solid #D4913A", background: "rgba(212,145,58,0.04)" }}
+        className="card"
+        style={{ padding: 20, marginBottom: 24, borderLeft: "3px solid var(--brand-amber)", background: "var(--brand-amber-glow)" }}
       >
-        <div className="flex items-center gap-2 mb-1">
-          <AlertCircle size={14} style={{ color: "#D4913A" }} />
-          <p className="text-sm font-semibold" style={{ color: "#2C2A26" }}>Late submission policy</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <AlertCircle size={15} style={{ color: "var(--brand-amber)" }} />
+          <p style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>Late submission policy</p>
         </div>
-        <p className="text-xs leading-relaxed" style={{ color: "#7A5C3E" }}>
+        <p className="text-body">
           Late entries are accepted but flagged. The system records them as late and notifies the relevant manager. Data is preserved — no submission is rejected outright.
         </p>
       </div>
