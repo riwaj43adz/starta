@@ -4,10 +4,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/lib/store/useUserStore";
 import {
-  getUserGoalSheet,
-  QUARTERLY_UPDATES,
   getCheckInComments,
 } from "@/lib/data/seed";
+import { useDataStore } from "@/lib/store/useDataStore";
 import { computeScore } from "@/lib/utils/scoring";
 import type { Quarter, CheckInStatus } from "@/lib/types";
 import { toast } from "sonner";
@@ -17,7 +16,8 @@ const CURRENT_QUARTER: Quarter = "Q3";
 
 export default function CheckInPage() {
   const { currentUser } = useUserStore();
-  const sheet = currentUser ? getUserGoalSheet(currentUser.id) : undefined;
+  const { goalSheets, addUpdate } = useDataStore();
+  const sheet = currentUser ? goalSheets.find(s => s.userId === currentUser.id && s.status === "approved") : undefined;
   const prevComments = sheet ? getCheckInComments(sheet.id) : [];
   const prevQ2Comment = prevComments.find(c => c.quarter === "Q2");
 
@@ -33,6 +33,21 @@ export default function CheckInPage() {
   );
 
   const handleSubmit = () => {
+    Object.keys(goalStates).forEach(goalId => {
+       const state = goalStates[goalId];
+       const goal = sheet!.goals.find(g => g.id === goalId)!;
+       const score = computeScore(goal.uomType, goal.targetValue, state.actual);
+       addUpdate({
+         id: `update-${Date.now()}-${goalId}`,
+         goalId,
+         quarter: CURRENT_QUARTER,
+         actualValue: state.actual,
+         status: state.status,
+         computedScore: score,
+         contextNote: contextNote,
+         submittedAt: new Date().toISOString()
+       });
+    });
     setSubmitted(true);
     setShowLayerAnimate(true);
     toast.success("Quarter submitted. Your stratum grows.");

@@ -3,19 +3,21 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
-  USERS, GOAL_SHEETS, QUARTERLY_UPDATES, AUDIT_LOG, ACTIVE_CYCLE
+  USERS, AUDIT_LOG, ACTIVE_CYCLE
 } from "@/lib/data/seed";
 import { getTeamForManager } from "@/lib/data/seed";
+import { useDataStore } from "@/lib/store/useDataStore";
 import { Map, Settings, FileText, BarChart3, ChevronRight, Users, CheckCircle } from "lucide-react";
 
 export default function MapRoomPage() {
+  const { goalSheets, updates } = useDataStore();
   // Compute stats
   const allEmployees = USERS.filter(u => u.role === "employee");
-  const submittedSheets = GOAL_SHEETS.filter(s => s.status !== "draft");
-  const approvedSheets = GOAL_SHEETS.filter(s => s.status === "locked" || s.status === "approved");
+  const submittedSheets = goalSheets.filter(s => s.status !== "draft");
+  const approvedSheets = goalSheets.filter(s => s.status === "locked" || s.status === "approved");
   const completionRate = Math.round((approvedSheets.length / allEmployees.length) * 100);
 
-  const q3Updates = QUARTERLY_UPDATES.filter(u => u.quarter === "Q3");
+  const q3Updates = updates.filter(u => u.quarter === "Q3");
   const q3CompletionRate = Math.round((q3Updates.length / (approvedSheets.length * 3)) * 100);
 
   const teams = [

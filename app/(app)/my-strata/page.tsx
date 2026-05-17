@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useUserStore } from "@/lib/store/useUserStore";
-import { getUserGoalSheet, getUserUpdates, ACTIVE_CYCLE, getCheckInComments } from "@/lib/data/seed";
+import { ACTIVE_CYCLE, getCheckInComments } from "@/lib/data/seed";
+import { useDataStore } from "@/lib/store/useDataStore";
 import { buildStratumLayers, depthToHex, scoreToDepth } from "@/lib/utils/scoring";
 import StratumBar from "@/components/strata/StratumBar";
 import Link from "next/link";
@@ -22,10 +23,11 @@ const s = (i: number) => ({
 
 export default function MyStrataPage() {
   const { currentUser } = useUserStore();
+  const { goalSheets, updates: allUpdates } = useDataStore();
   if (!currentUser) return null;
 
-  const sheet = getUserGoalSheet(currentUser.id);
-  const updates = getUserUpdates(currentUser.id);
+  const sheet = goalSheets.find(s => s.userId === currentUser.id && s.status === "approved");
+  const updates = sheet ? allUpdates.filter(u => sheet.goals.some(g => g.id === u.goalId)) : [];
   const comments = sheet ? getCheckInComments(sheet.id) : [];
   const strata = sheet ? buildStratumLayers(sheet.goals, updates) : [];
   const formedLayers = strata.filter(l => l.isComplete);

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { GOAL_SHEETS, USERS, getTeamForManager } from "@/lib/data/seed";
+import { USERS, getTeamForManager } from "@/lib/data/seed";
 import { useUserStore } from "@/lib/store/useUserStore";
+import { useDataStore } from "@/lib/store/useDataStore";
 import WeightageAllocator from "@/components/strata/WeightageAllocator";
 import { Check, RotateCcw, MessageSquare, Target } from "lucide-react";
 import { toast } from "sonner";
@@ -13,17 +14,19 @@ const s = (i: number) => ({ initial: { opacity: 0, y: 10 }, animate: { opacity: 
 
 export default function ApprovalsPage() {
   const { currentUser } = useUserStore();
+  const { goalSheets, updateGoalSheetStatus } = useDataStore();
   const [approved, setApproved] = useState<string[]>([]);
   const [returned, setReturned] = useState<Record<string, string>>({});
   const [returnComment, setReturnComment] = useState<Record<string, string>>({});
 
   if (!currentUser) return null;
   const team = getTeamForManager(currentUser.id);
-  const pending = GOAL_SHEETS.filter(
+  const pending = goalSheets.filter(
     sheet => team.some(m => m.id === sheet.userId) && sheet.status === "submitted" && !approved.includes(sheet.id) && !(sheet.id in returned)
   );
 
   const handleApprove = (sheet: GoalSheet) => {
+    updateGoalSheetStatus(sheet.id, "approved");
     setApproved(prev => [...prev, sheet.id]);
     const employee = USERS.find(u => u.id === sheet.userId);
     toast.success(`${employee?.name}'s canvas approved.`);
@@ -35,6 +38,7 @@ export default function ApprovalsPage() {
       toast.error("Add a note for them before returning — they deserve context.");
       return;
     }
+    updateGoalSheetStatus(sheet.id, "returned");
     setReturned(prev => ({ ...prev, [sheet.id]: comment }));
     const employee = USERS.find(u => u.id === sheet.userId);
     toast.success(`Returned to ${employee?.name} with your note.`);

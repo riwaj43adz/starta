@@ -7,6 +7,7 @@ import { useUserStore } from "@/lib/store/useUserStore";
 import { THRUST_AREAS } from "@/lib/types";
 import type { UoMType } from "@/lib/types";
 import { validateWeightage } from "@/lib/utils/scoring";
+import { useDataStore } from "@/lib/store/useDataStore";
 import WeightageAllocator from "@/components/strata/WeightageAllocator";
 import LayerCeremony from "@/components/strata/LayerCeremony";
 import { Plus, Trash2, ChevronRight } from "lucide-react";
@@ -21,6 +22,7 @@ const UOM_OPTIONS: { value: UoMType; label: string; desc: string }[] = [
 
 export default function CanvasPage() {
   const { currentUser } = useUserStore();
+  const { saveGoalSheet } = useDataStore();
   const { draft, setDraft, addGoalToDraft, removeGoalFromDraft, updateWeightage, saveDraft, clearDraft, isFirstLayerCeremonyDone, markFirstLayerCeremonyDone } = useGoalStore();
   const [step, setStep] = useState<"intention" | "goals" | "review">("intention");
   const [showCeremony, setShowCeremony] = useState(false);
@@ -53,6 +55,18 @@ export default function CanvasPage() {
     setNewGoal({ thrustArea: "", title: "", description: "", uomType: "numeric_max", targetValue: 0, weightage: 20 });
   };
 
+  const submitToStore = () => {
+    saveGoalSheet({
+      id: `sheet-${Date.now()}`,
+      userId: currentUser!.id,
+      year: "FY 2025-26",
+      status: "submitted",
+      intentionStatement: draft.intentionStatement,
+      goals: draft.goals as any,
+      submittedAt: new Date().toISOString()
+    });
+  };
+
   const handleSubmit = () => {
     if (!weightageValidation.isValid) {
       toast.error(weightageValidation.message);
@@ -61,6 +75,7 @@ export default function CanvasPage() {
     if (currentUser?.isFirstYear && !isFirstLayerCeremonyDone) {
       setShowCeremony(true);
     } else {
+      submitToStore();
       toast.success("Canvas submitted. Your manager will review it.");
       clearDraft();
     }
@@ -73,6 +88,7 @@ export default function CanvasPage() {
           onComplete={() => {
             setShowCeremony(false);
             markFirstLayerCeremonyDone();
+            submitToStore();
             toast.success("Canvas submitted for review.");
             clearDraft();
           }}
