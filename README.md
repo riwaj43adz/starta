@@ -44,7 +44,8 @@ The dashboard where employees update their progress throughout the year.
 - **Sparkline Trajectory:** A beautiful, responsive Recharts area graph maps the employee's score trajectory over multiple quarters.
 
 ### 4. The Map Room (Admin & Analytics)
-A birds-eye view of the organization's terrain for HR Business Partners and Executives.
+A birds-eye view of the organization's terrain for HR Business Partners and Executives.$\color{black}{\text{This is black text using LaTeX}}$
+
 - **Strata Intelligence Engine:** A simulated AI integration that analyzes an employee's context notes alongside their quantitative scores to provide out-of-the-box behavioral and performance recommendations. For example, it can detect if high execution scores correlate with burnout indicators in the context notes.
 - **Team Heatmaps:** Deep visual analytics mapping individual competency across multiple quarters against the team average.
 - **Competency Radar Charts:** Spider charts visualizing a team member's specific strengths in thrust areas compared to the organization's baseline.
